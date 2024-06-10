@@ -19,6 +19,47 @@
     cursor: default;
 }
 
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    margin-bottom: 20px;
+    gap: 8;
+}
+
+.info {
+    padding: 10px;
+    margin: 10px;
+    background-color: #292e36;
+    color: white;
+    border-radius: 8px;
+    position: relative;
+}
+
+.info .infotext {
+    visibility: hidden;
+    background-color: #636f82;
+    padding: 10px;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    width: 10vw;
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 100%;
+    margin-left: 20px;
+}
+
+.infotext > li {
+    font-size: 1.4rem;
+}
+
+.info:hover .infotext {
+    visibility: visible;
+}
+
 button {
     padding: 10px;
     border: none;

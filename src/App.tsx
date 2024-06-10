@@ -137,6 +137,28 @@ function App() {
     return (
         <div>
             <div className="center">
+                <div className="header">
+                    <h1>Morse Code Clock</h1>
+                    <h1 className="info">
+                        ?
+                        <span className="infotext">
+                            Morse code cheatsheet:
+                            <ul>
+                                <li>0: -----</li>
+                                <li>1: .----</li>
+                                <li>2: ..---</li>
+                                <li>3: ...--</li>
+                                <li>4: ....-</li>
+                                <li>5: .....</li>
+                                <li>6: -....</li>
+                                <li>7: --...</li>
+                                <li>8: ---..</li>
+                                <li>9: ----.</li>
+                            </ul>
+                        </span>
+                    </h1>
+                </div>
+
                 <code className="unit">
                     <h1>Hours</h1>
                     <h1>{time.hour}</h1>
