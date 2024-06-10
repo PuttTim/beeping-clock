@@ -40,6 +40,33 @@ function App() {
     const [frozenTime, setFrozenTime] = useState("")
     const [currentlyPlaying, setCurrentlyPlaying] = useState(false)
 
+    let oscNode
+    let gainNode
+
+    const startAudio = () => {
+        gainNode.gain.setTargetAtTime(0.1, 0, 0.001)
+    }
+
+    const stopAudio = () => {
+        gainNode.gain.setTargetAtTime(0, 0, 0.001)
+    }
+
+    const sleep = (ms: number) => {
+        return new Promise(resolve => setTimeout(resolve, ms))
+    }
+
+    const playDot = async () => {
+        startAudio()
+        await sleep(DOT_TIME)
+        stopAudio()
+    }
+
+    const playDash = async () => {
+        startAudio()
+        await sleep(DASH_TIME)
+        stopAudio()
+    }
+
     const fireBeeps = async () => {
         if (currentlyPlaying) {
             return
@@ -48,8 +75,8 @@ function App() {
         // S/o @alexanderellis on GH for creating an example of how to use the Web Audio API
         // to create a simple morse code beeping sound effect https://alexanderell.is/posts/writing-morse-code-games/
         const audioCtx = new AudioContext()
-        const oscNode = audioCtx.createOscillator()
-        const gainNode = audioCtx.createGain()
+        oscNode = audioCtx.createOscillator()
+        gainNode = audioCtx.createGain()
 
         oscNode.type = "sine"
         oscNode.frequency.value = 400
@@ -58,30 +85,6 @@ function App() {
         oscNode.connect(gainNode)
         gainNode.connect(audioCtx.destination)
         oscNode.start()
-
-        const startAudio = () => {
-            gainNode.gain.setTargetAtTime(0.1, 0, 0.001)
-        }
-
-        const stopAudio = () => {
-            gainNode.gain.setTargetAtTime(0, 0, 0.001)
-        }
-
-        const sleep = (ms: number) => {
-            return new Promise(resolve => setTimeout(resolve, ms))
-        }
-
-        const playDot = async () => {
-            startAudio()
-            await sleep(DOT_TIME)
-            stopAudio()
-        }
-
-        const playDash = async () => {
-            startAudio()
-            await sleep(DASH_TIME)
-            stopAudio()
-        }
 
         setFrozenTime(time.hour + "  :  " + time.min + "  :  " + time.s)
         setCurrentlyPlaying(true)
@@ -105,6 +108,11 @@ function App() {
 
         setFrozenTime("")
         setCurrentlyPlaying(false)
+
+        oscNode.stop()
+        oscNode.disconnect()
+        gainNode.disconnect()
+        audioCtx.close()
     }
 
     const loopyLoop = setInterval(() => {
