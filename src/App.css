@@ -1,5 +1,37 @@
-.text {
-    /* transform: rotate(90deg); */
-    /* padding: 16px; */
-    /* margin-left: 16px; */
+.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.unit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 60%;
+}
+
+.playing {
+    opacity: 0;
+    cursor: default;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #292e36;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-family: "Arial";
+}
+
+button:hover {
+    background-color: #1c2128;
 }

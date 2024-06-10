@@ -35,45 +35,6 @@ function App() {
     const DASH_TIME = DOT_TIME * 3
     const SYMBOL_BREAK = DOT_TIME
     const LETTER_BREAK = DOT_TIME * 3
-    const WORD_BREAK = DOT_TIME * 7
-
-    const audioCtx = new AudioContext()
-    const oscNode = audioCtx.createOscillator()
-    const gainNode = audioCtx.createGain()
-
-    oscNode.type = "sine"
-    oscNode.frequency.value = 800
-    gainNode.gain.value = 0
-
-    oscNode.connect(gainNode)
-    gainNode.connect(audioCtx.destination)
-    oscNode.start()
-
-    const startAudio = () => {
-        gainNode.gain.setTargetAtTime(0.1, 0, 0.001)
-    }
-
-    const stopAudio = () => {
-        gainNode.gain.setTargetAtTime(0, 0, 0.001)
-    }
-
-    const sleep = (ms: number) => {
-        return new Promise(resolve => setTimeout(resolve, ms))
-    }
-
-    const playDot = async () => {
-        // if (currentPlayCounter != playCounter) { return; }
-        startAudio()
-        await sleep(DOT_TIME)
-        stopAudio()
-    }
-
-    const playDash = async () => {
-        // if (currentPlayCounter != playCounter) { return; }
-        startAudio()
-        await sleep(DASH_TIME)
-        stopAudio()
-    }
 
     const [time, setTime] = useState(transformToMorseCode("00:00:00"))
     const [frozenTime, setFrozenTime] = useState("")
@@ -84,6 +45,45 @@ function App() {
             return
         }
 
+        // S/o @alexanderellis on GH for creating an example of how to use the Web Audio API
+        // to create a simple morse code beeping sound effect https://alexanderell.is/posts/writing-morse-code-games/
+        const audioCtx = new AudioContext()
+        const oscNode = audioCtx.createOscillator()
+        const gainNode = audioCtx.createGain()
+
+        oscNode.type = "sine"
+        oscNode.frequency.value = 800
+        gainNode.gain.value = 0
+
+        oscNode.connect(gainNode)
+        gainNode.connect(audioCtx.destination)
+        oscNode.start()
+
+        const startAudio = () => {
+            gainNode.gain.setTargetAtTime(0.1, 0, 0.001)
+        }
+
+        const stopAudio = () => {
+            gainNode.gain.setTargetAtTime(0, 0, 0.001)
+        }
+
+        const sleep = (ms: number) => {
+            return new Promise(resolve => setTimeout(resolve, ms))
+        }
+
+        const playDot = async () => {
+            startAudio()
+            await sleep(DOT_TIME)
+            stopAudio()
+        }
+
+        const playDash = async () => {
+            startAudio()
+            await sleep(DASH_TIME)
+            stopAudio()
+        }
+
+        setFrozenTime(time.hour + "  :  " + time.min + "  :  " + time.s)
         setCurrentlyPlaying(true)
 
         const currentTime = Object.values(time)
@@ -91,9 +91,13 @@ function App() {
         for (let i = 0; i < 3; i++) {
             const b = currentTime[i].split("")
             for (let j = 0; j < b.length; j++) {
-                if (b[i] === ".") {
+                if (b[j] === ".") {
+                    console.log("dot", j)
+
                     await playDot()
-                } else if (b[i] === "-") {
+                } else if (b[j] === "-") {
+                    console.log("dash", j)
+
                     await playDash()
                 }
                 await sleep(SYMBOL_BREAK)
@@ -116,7 +120,6 @@ function App() {
                 }),
             ),
         )
-        // console.log(time, typeof time)
     }, 1000)
 
     useEffect(() => {
@@ -127,29 +130,39 @@ function App() {
 
     return (
         <div>
-            <div className="flex gap-2">
-                <code>
-                    <h1 className="text">Hour {time.hour}</h1>
+            <div className="center">
+                <code className="unit">
+                    <h1>Hours</h1>
+                    <h1>{time.hour}</h1>
                 </code>
-                <code>
-                    <h1 className="text">Minute {time.min}</h1>
+                <code className="unit">
+                    <h1>Minutes</h1>
+                    <h1>{time.min}</h1>
                 </code>
-                <code>
-                    <h1 className="text">Seconds {time.s}</h1>
+                <code className="unit">
+                    <h1>Seconds</h1>
+                    <h1>{time.s}</h1>
                 </code>
+                <button
+                    onClick={() => {
+                        fireBeeps()
+                    }}
+                    className="btn">
+                    Play Current Beeps
+                </button>
             </div>
-            <button
-                onClick={() => {
-                    setFrozenTime(
-                        time.hour + "  :  " + time.min + "  :  " + time.s,
-                    )
-                    fireBeeps()
-                }}
-                className="btn">
-                Play Current Beeps
-            </button>
 
-            <h1 className="text">{frozenTime ?? ""}</h1>
+            <code>
+                {frozenTime ? (
+                    <h1>{frozenTime}</h1>
+                ) : (
+                    <h1 className="playing">
+                        <span className="text-white">
+                            ----- ----- : ----- ----- : ----- -----
+                        </span>
+                    </h1>
+                )}
+            </code>
         </div>
     )
 }
