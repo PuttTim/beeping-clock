@@ -52,7 +52,7 @@ function App() {
         const gainNode = audioCtx.createGain()
 
         oscNode.type = "sine"
-        oscNode.frequency.value = 800
+        oscNode.frequency.value = 400
         gainNode.gain.value = 0
 
         oscNode.connect(gainNode)
@@ -92,12 +92,10 @@ function App() {
             const b = currentTime[i].split("")
             for (let j = 0; j < b.length; j++) {
                 if (b[j] === ".") {
-                    console.log("dot", j)
-
+                    // console.log("dot", j)
                     await playDot()
                 } else if (b[j] === "-") {
-                    console.log("dash", j)
-
+                    // console.log("dash", j)
                     await playDash()
                 }
                 await sleep(SYMBOL_BREAK)
@@ -157,9 +155,7 @@ function App() {
                     <h1>{frozenTime}</h1>
                 ) : (
                     <h1 className="playing">
-                        <span className="text-white">
-                            ----- ----- : ----- ----- : ----- -----
-                        </span>
+                        ----- ----- : ----- ----- : ----- -----
                     </h1>
                 )}
             </code>
